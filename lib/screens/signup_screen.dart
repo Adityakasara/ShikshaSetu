@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/app_title.dart';
-import 'signup_screen.dart';
-import 'dashboard_screen.dart';
+import 'login_screen.dart';
+import 'dashboard_screen.dart' hide LoginScreen;
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
+class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
+  final _nameController = TextEditingController(); // ✅ New
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
+  final _phoneController = TextEditingController();
+
   bool _loading = false;
   String? _error;
 
@@ -47,19 +51,33 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _signup() async {
+    if (_passwordController.text != _confirmController.text) {
+      setState(() => _error = "Passwords do not match");
+      return;
+    }
+
     setState(() {
       _loading = true;
       _error = null;
     });
 
     try {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
+      // ✅ Create account in Supabase Auth
+      final response = await Supabase.instance.client.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
       if (response.user != null) {
+        // ✅ Insert extra info into "students" table
+        await Supabase.instance.client.from('students').insert({
+          'id': response.user!.id,
+          'name': _nameController.text.trim(),   // ✅ Added name
+          'email': _emailController.text.trim(),
+          'phone': _phoneController.text.trim(),
+        });
+
         if (mounted) {
           Navigator.pushReplacement(
             context,
@@ -68,28 +86,35 @@ class _LoginScreenState extends State<LoginScreen>
         }
       }
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
+      setState(() => _error = e.toString());
     } finally {
       setState(() => _loading = false);
     }
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      {bool isPassword = false}) {
+      {bool isPassword = false, TextInputType keyboard = TextInputType.text}) {
     return TextField(
       controller: controller,
       obscureText: isPassword,
+      keyboardType: keyboard,
+      maxLength: label == "Phone Number" ? 10 : null,
       decoration: InputDecoration(
         labelText: label,
-        floatingLabelStyle: const TextStyle(color: Color.fromARGB(255, 233, 81, 6)),
+        counterText: "",
+        suffixIcon: label == "Phone Number" && controller.text.length == 10
+            ? const Icon(Icons.check_circle, color: Colors.green)
+            : null,
+        floatingLabelStyle:
+            const TextStyle(color: Color.fromARGB(255, 233, 81, 6)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 53, 188, 225), width: 2),
+          borderSide: const BorderSide(
+              color: Color.fromARGB(255, 53, 188, 225), width: 2),
           borderRadius: BorderRadius.circular(12),
         ),
       ),
+      onChanged: (_) => setState(() {}),
     );
   }
 
@@ -113,12 +138,25 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppTitle(text: '',),
+                    const AppTitle(text: ''),
                     const SizedBox(height: 40),
-                    _buildTextField("Email", _emailController),
+
+                    // ✅ New Name field
+                    _buildTextField("Name", _nameController),
+                    const SizedBox(height: 16),
+
+                    _buildTextField("Email", _emailController,
+                        keyboard: TextInputType.emailAddress),
+                    const SizedBox(height: 16),
+                    _buildTextField("Phone Number", _phoneController,
+                        keyboard: TextInputType.phone),
                     const SizedBox(height: 16),
                     _buildTextField("Password", _passwordController,
                         isPassword: true),
+                    const SizedBox(height: 16),
+                    _buildTextField("Confirm Password", _confirmController,
+                        isPassword: true),
+
                     if (_error != null) ...[
                       const SizedBox(height: 10),
                       Text(_error!,
@@ -126,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ],
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _loading ? null : _login,
+                      onPressed: _loading ? null : _signup,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                         shape: RoundedRectangleBorder(
@@ -137,19 +175,19 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       child: _loading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Login"),
+                          : const Text("Sign Up"),
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => const SignupScreen()),
+                              builder: (_) => const LoginScreen()),
                         );
                       },
                       child: const Text(
-                        "Don’t have an account? Sign up",
+                        "Already have an account? Login",
                         style: TextStyle(
                           color: Color.fromARGB(255, 2, 137, 247),
                           fontWeight: FontWeight.w800,
