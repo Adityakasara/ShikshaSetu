@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/app_title.dart';
 import 'login_screen.dart';
-import 'dashboard_screen.dart' hide LoginScreen;
+import 'dashboard_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -13,18 +12,30 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
-  final _nameController = TextEditingController(); // ✅ New
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
-  final _phoneController = TextEditingController();
 
+  String? _selectedClass;
   bool _loading = false;
   String? _error;
 
   late AnimationController _controller;
   late Animation<Color?> _gradient1;
   late Animation<Color?> _gradient2;
+
+  final List<String> _classOptions = [
+    "10th",
+    "+1",
+    "+2",
+    "BTech",
+    "BBA",
+    "BA",
+    "BCom",
+    "MBA",
+  ];
 
   @override
   void initState() {
@@ -34,15 +45,13 @@ class _SignupScreenState extends State<SignupScreen>
       duration: const Duration(seconds: 5),
     )..repeat(reverse: true);
 
-    _gradient1 = ColorTween(
-      begin: Colors.blue.shade200,
-      end: Colors.blue.shade600,
-    ).animate(_controller);
+    _gradient1 =
+        ColorTween(begin: Colors.blue.shade200, end: Colors.blue.shade600)
+            .animate(_controller);
 
-    _gradient2 = ColorTween(
-      begin: Colors.orange.shade200,
-      end: Colors.orange.shade600,
-    ).animate(_controller);
+    _gradient2 =
+        ColorTween(begin: Colors.orange.shade200, end: Colors.orange.shade600)
+            .animate(_controller);
   }
 
   @override
@@ -56,6 +65,10 @@ class _SignupScreenState extends State<SignupScreen>
       setState(() => _error = "Passwords do not match");
       return;
     }
+    if (_selectedClass == null) {
+      setState(() => _error = "Please select your class");
+      return;
+    }
 
     setState(() {
       _loading = true;
@@ -63,19 +76,18 @@ class _SignupScreenState extends State<SignupScreen>
     });
 
     try {
-      // ✅ Create account in Supabase Auth
       final response = await Supabase.instance.client.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
       if (response.user != null) {
-        // ✅ Insert extra info into "students" table
         await Supabase.instance.client.from('students').insert({
           'id': response.user!.id,
-          'name': _nameController.text.trim(),   // ✅ Added name
+          'name': _nameController.text.trim(),
           'email': _emailController.text.trim(),
           'phone': _phoneController.text.trim(),
+          'class_level': _selectedClass ?? "",
         });
 
         if (mounted) {
@@ -102,9 +114,6 @@ class _SignupScreenState extends State<SignupScreen>
       decoration: InputDecoration(
         labelText: label,
         counterText: "",
-        suffixIcon: label == "Phone Number" && controller.text.length == 10
-            ? const Icon(Icons.check_circle, color: Colors.green)
-            : null,
         floatingLabelStyle:
             const TextStyle(color: Color.fromARGB(255, 233, 81, 6)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -138,25 +147,45 @@ class _SignupScreenState extends State<SignupScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppTitle(text: ''),
+                    const Text(
+                      "ShikshaSetu",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
                     const SizedBox(height: 40),
-
-                    // ✅ New Name field
                     _buildTextField("Name", _nameController),
                     const SizedBox(height: 16),
-
                     _buildTextField("Email", _emailController,
                         keyboard: TextInputType.emailAddress),
                     const SizedBox(height: 16),
                     _buildTextField("Phone Number", _phoneController,
                         keyboard: TextInputType.phone),
                     const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _selectedClass,
+                      items: _classOptions
+                          .map((c) => DropdownMenuItem(
+                                value: c,
+                                child: Text(c),
+                              ))
+                          .toList(),
+                      onChanged: (val) => setState(() => _selectedClass = val),
+                      decoration: InputDecoration(
+                        labelText: "Class Level",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     _buildTextField("Password", _passwordController,
                         isPassword: true),
                     const SizedBox(height: 16),
                     _buildTextField("Confirm Password", _confirmController,
                         isPassword: true),
-
                     if (_error != null) ...[
                       const SizedBox(height: 10),
                       Text(_error!,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/app_title.dart';
-import '../app_settings.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -61,4 +60,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
     );
   }
+}
+
+extension on _NotificationsScreenState {
+  get AppSettings => null;
 }

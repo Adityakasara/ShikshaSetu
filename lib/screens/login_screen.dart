@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/app_title.dart';
+
 import 'signup_screen.dart';
 import 'dashboard_screen.dart';
 
@@ -54,7 +54,8 @@ class _LoginScreenState extends State<LoginScreen>
     });
 
     try {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
+      final response = await Supabase.instance.client.auth
+          .signInWithPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
@@ -66,6 +67,10 @@ class _LoginScreenState extends State<LoginScreen>
             MaterialPageRoute(builder: (_) => const DashboardScreen()),
           );
         }
+      } else {
+        setState(() {
+          _error = "Invalid credentials. Please try again.";
+        });
       }
     } catch (e) {
       setState(() {
@@ -83,10 +88,12 @@ class _LoginScreenState extends State<LoginScreen>
       obscureText: isPassword,
       decoration: InputDecoration(
         labelText: label,
-        floatingLabelStyle: const TextStyle(color: Color.fromARGB(255, 233, 81, 6)),
+        floatingLabelStyle:
+            const TextStyle(color: Color.fromARGB(255, 233, 81, 6)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 53, 188, 225), width: 2),
+          borderSide: const BorderSide(
+              color: Color.fromARGB(255, 53, 188, 225), width: 2),
           borderRadius: BorderRadius.circular(12),
         ),
       ),
@@ -113,7 +120,14 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppTitle(text: '',),
+                    const Text(
+                      "ShikshaSetu",
+                      style: TextStyle(
+                        fontSize: 36,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 40),
                     _buildTextField("Email", _emailController),
                     const SizedBox(height: 16),

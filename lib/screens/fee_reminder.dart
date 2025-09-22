@@ -1,62 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-class FeeReminder extends StatefulWidget {
-  const FeeReminder({super.key});
-
-  @override
-  State<FeeReminder> createState() => _FeeReminderState();
-}
-
-class _FeeReminderState extends State<FeeReminder> {
-  String? _status;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchFeeStatus();
-  }
-
-  Future<void> _fetchFeeStatus() async {
-    final userId = Supabase.instance.client.auth.currentUser!.id;
-
-    try {
-      final data = await Supabase.instance.client
-          .from('fees')
-          .select('status')
-          .eq('student_id', userId)
-          .maybeSingle();
-
-      setState(() {
-        _status = data?['status'];
-        _loading = false;
-      });
-    } catch (e) {
-      setState(() => _loading = false);
-    }
-  }
+class FeeReminderScreen extends StatelessWidget {
+  const FeeReminderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final feesPaid = 20000;
+    final totalFees = 50000;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Fee Reminder")),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: Text(
-                _status == null
-                    ? "No fee record available"
-                    : (_status == "due"
-                        ? "⚠️ Fees Pending"
-                        : "✅ Fees Paid"),
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: _status == "due" ? Colors.red : Colors.green,
-                ),
-              ),
+      appBar: AppBar(title: const Text("Fee Reminder"), backgroundColor: Colors.orange),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Your Fee Status", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            LinearProgressIndicator(
+              value: feesPaid / totalFees,
+              color: Colors.green,
+              minHeight: 12,
+              backgroundColor: Colors.red.withOpacity(0.2),
             ),
+            const SizedBox(height: 10),
+            Text("Paid: ₹$feesPaid / ₹$totalFees"),
+            const SizedBox(height: 30),
+            const Text("Reminder: Please clear your pending fees before the due date.",
+                style: TextStyle(color: Colors.red)),
+          ],
+        ),
+      ),
     );
   }
 }

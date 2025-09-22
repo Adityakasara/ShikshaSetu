@@ -1,352 +1,169 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'risk_analysis_screen.dart';
+import 'progress_center.dart';
+import 'fee_reminder.dart';
+import 'student_bot_screen.dart';
+import 'profile_screen.dart';
 
-// Replaced external screen imports with simple local placeholders to avoid missing URI errors.
-// These placeholders can be moved to separate files later if desired.
-
-class ProgressScreen extends StatelessWidget {
-  const ProgressScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Progress')),
-      body: const Center(child: Text('Progress Screen')),
-    );
-  }
-}
-
-class FeesScreen extends StatelessWidget {
-  const FeesScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Fees')),
-      body: const Center(child: Text('Fees Screen')),
-    );
-  }
-}
-
-class RiskScreen extends StatelessWidget {
-  const RiskScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Risk Analysis')),
-      body: const Center(child: Text('Risk Analysis Screen')),
-    );
-  }
-}
-
-class StudentBotScreen extends StatelessWidget {
-  const StudentBotScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Student Bot')),
-      body: const Center(child: Text('Student Bot Screen')),
-    );
-  }
-}
-
-class AboutUsScreen extends StatelessWidget {
-  const AboutUsScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('About Us')),
-      body: const Center(child: Text('About Us Screen')),
-    );
-  }
-}
-
-class ContactMentorScreen extends StatelessWidget {
-  const ContactMentorScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Contact Mentor')),
-      body: const Center(child: Text('Contact Mentor Screen')),
-    );
-  }
-}
-
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: const Center(child: Text('Settings Screen')),
-    );
-  }
-}
-
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: const Center(child: Text('Login Screen')),
-    );
-  }
-}
-
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: "Shiksha",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-              TextSpan(
-                text: "Setu",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange,
-                ),
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
 
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.orange],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Text(
-                "ShikshaSetu Menu",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.dashboard),
-              title: const Text("Dashboard"),
-              onTap: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const DashboardScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.bar_chart),
-              title: const Text("Progress"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProgressScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.payments),
-              title: const Text("Fees"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FeesScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.warning),
-              title: const Text("Risk Analysis"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RiskScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.smart_toy),
-              title: const Text("Student Bot"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const StudentBotScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text("About Us"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AboutUsScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.contact_mail),
-              title: const Text("Contact Mentor"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ContactMentorScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+class _DashboardScreenState extends State<DashboardScreen> {
+  Student? student;
 
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          children: [
-            _buildCard(
-              context,
-              "Attendance",
-              Icons.school,
-              "68% present",
-              Colors.blue,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProgressScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "Marks",
-              Icons.bar_chart,
-              "Trend: Downward 📉",
-              Colors.green,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProgressScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "Fees",
-              Icons.payment,
-              "Due: ₹10,000",
-              Colors.orange,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FeesScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "Risk",
-              Icons.warning,
-              "High Risk 🚨",
-              Colors.red,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RiskScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "Student Bot",
-              Icons.smart_toy,
-              "Ask me anything",
-              Colors.purple,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const StudentBotScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "About Us",
-              Icons.info,
-              "Know more",
-              Colors.teal,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AboutUsScreen()),
-              ),
-            ),
-            _buildCard(
-              context,
-              "Contact Mentor",
-              Icons.contact_mail,
-              "Reach your mentor",
-              Colors.indigo,
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ContactMentorScreen()),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    loadStudent();
   }
 
-  Widget _buildCard(BuildContext context, String title, IconData icon,
-      String subtitle, Color color, VoidCallback onTap) {
+  Future<void> loadStudent() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+
+    final email = user.email;
+    if (email == null) return;
+
+    final response = await Supabase.instance.client
+        .from('students')
+        .select()
+        .eq('email', email)
+        .maybeSingle();
+
+    if (response != null) {
+      setState(() {
+        student = Student(
+          name: response['name'] ?? "Student",
+          attendance: (response['attendance'] ?? 0).toDouble(),
+          averageMarks: (response['average_marks'] ?? 0).toDouble(),
+          feesDue: (response['fees_due'] ?? 0).toDouble(),
+        );
+      });
+    }
+  }
+
+  Widget _buildTile(String title, IconData icon, Color color, Widget page) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => page),
+      ),
       child: Card(
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Container(
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
               colors: [color.withOpacity(0.7), color],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(12),
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: Colors.white, size: 40),
-                const SizedBox(height: 12),
-                Text(
-                  title,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(height: 10),
+              Text(title,
                   style: const TextStyle(
-                      color: Colors.white,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
-                ),
-              ],
-            ),
+                      color: Colors.white)),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(student?.name ?? "Student"),
+              accountEmail: Text(Supabase.instance.client.auth.currentUser?.email ?? ""),
+              currentAccountPicture: const CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 40, color: Colors.orange),
+              ),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blueAccent, Colors.orangeAccent],
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text("Profile"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.smart_toy),
+              title: const Text("Student Bot"),
+              onTap: () {
+                if (student != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => StudentBotScreen(student: student!),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please wait, loading student data...")),
+                  );
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () async {
+                await Supabase.instance.client.auth.signOut();
+                if (mounted) Navigator.popUntil(context, (r) => r.isFirst);
+              },
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        title: Text("Welcome, ${student?.name ?? 'Student'}"),
+        backgroundColor: Colors.orange,
+      ),
+      body: student == null
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildTile("Progress", Icons.show_chart, Colors.blue,
+                      const ProgressCenterScreen()),
+                  _buildTile("Fees", Icons.payment, Colors.green,
+                      const FeeReminderScreen()),
+                  _buildTile("Risk", Icons.warning, Colors.red,
+                      const RiskAnalysisScreen()),
+                  _buildTile("Bot", Icons.smart_toy, Colors.purple,
+                      StudentBotScreen(student: student!)),
+                ],
+              ),
+            ),
     );
   }
 }
