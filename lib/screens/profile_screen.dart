@@ -12,8 +12,8 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          "Profile details will appear here",
-          style: TextStyle(fontSize: 18),
+          "Name = Aditya",
+          style: TextStyle(fontSize: 30),
         ),
       ),
     );

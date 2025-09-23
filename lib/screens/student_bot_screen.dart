@@ -1,76 +1,90 @@
-// ignore_for_file: implementation_imports
-
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
-import 'package:postgrest/src/types.dart';
 
-class Student {
-  final String name;
-  final double attendance;
-  final double averageMarks;
-  final double feesDue;
+class StudentBotScreen extends StatefulWidget {
+  const StudentBotScreen({super.key});
 
-  const Student({
-    required this.name,
-    required this.attendance,
-    required this.averageMarks,
-    required this.feesDue,
-  });
-
-  static Student? fromJson(PostgrestMap response) {
-    return null;
-  }
+  @override
+  State<StudentBotScreen> createState() => _StudentBotScreenState();
 }
 
-class StudentBotScreen extends StatelessWidget {
-  final Student student;
-  const StudentBotScreen({super.key, required this.student});
+class _StudentBotScreenState extends State<StudentBotScreen> {
+  final List<Map<String, String>> _messages = [];
+  final TextEditingController _controller = TextEditingController();
 
-  String _generateAdvice(Student student) {
-    List<String> tips = [];
+  void _sendMessage(String text) {
+    if (text.isEmpty) return;
 
-    if (student.attendance < 75) {
-      tips.add("⚠️ Your attendance is below 75%. Try to attend classes regularly.");
+    setState(() {
+      _messages.add({"role": "user", "text": text});
+    });
+    _controller.clear();
+
+    // 🔹 Basic trained responses (rule-based)
+    String reply;
+    if (text.toLowerCase().contains("attendance")) {
+      reply = "📅 Remember to keep attendance above 75% to stay safe!";
+    } else if (text.toLowerCase().contains("marks")) {
+      reply = "📊 Don’t worry, keep practicing daily and your marks will improve.";
+    } else if (text.toLowerCase().contains("fees")) {
+      reply = "💰 Please make sure your pending fees are cleared soon.";
     } else {
-      tips.add("✅ Attendance is good. Keep it up!");
+      reply = "🤖 I’m your study buddy! Ask me about attendance, marks, or fees.";
     }
 
-    if (student.averageMarks < 50) {
-      tips.add("📉 Marks are low. Spend extra time revising weak subjects.");
-    } else if (student.averageMarks < 70) {
-      tips.add("📊 Marks are average. Aim for consistent practice.");
-    } else {
-      tips.add("🎉 Excellent marks! Consider mentoring peers.");
-    }
-
-    if (student.feesDue > 0) {
-      tips.add("💰 You have pending fees of ₹${student.feesDue}. Please clear them soon.");
-    } else {
-      tips.add("✅ No fee dues. Good job staying on track!");
-    }
-
-    return tips.join("\n\n");
+    setState(() {
+      _messages.add({"role": "bot", "text": reply});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final advice = _generateAdvice(student);
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Student Bot")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(
+        title: const Text("Student Bot 🤖"),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final msg = _messages[index];
+                final isUser = msg["role"] == "user";
+                return Align(
+                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isUser ? Colors.orange[200] : Colors.green[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(msg["text"] ?? ""),
+                  ),
+                );
+              },
+            ),
+          ),
+          Row(
             children: [
-              Text("Hello, ${student.name}! 👋",
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20),
-              Text(advice, style: const TextStyle(fontSize: 16)),
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    hintText: "Type your question...",
+                    contentPadding: EdgeInsets.all(12),
+                  ),
+                  onSubmitted: _sendMessage,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.send),
+                onPressed: () => _sendMessage(_controller.text),
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
