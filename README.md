@@ -29,12 +29,63 @@ ShikshaSetu is intended to serve as a foundation for a student support platform 
 - **IDE Support:** VS Code / Android Studio
 - **Platform:** Android / iOS
 
-## Project Structure
 
-```bash
-lib/
-├── main.dart
-├── screens/
-├── widgets/
-├── models/
-└── services/
+
+This project is a starting point for a Flutter application.
+
+Prerequisites
+
+Make sure you have the following installed:
+
+Flutter SDK
+Dart SDK
+Android Studio or VS Code
+Android Emulator or a physical device
+Installation
+
+Clone the repository:
+\\\bash
+git clone https://github.com/Adityakasara/ShikshaSetu.git
+cd ShikshaSetu
+
+Install dependencies:
+
+flutter pub get
+
+Run the application:
+
+flutter run
+Useful Flutter Commands
+
+Check Flutter setup:
+
+flutter doctor
+
+Build APK:
+
+flutter build apk
+
+Build iOS app:
+
+flutter build ios
+Resources
+
+Helpful Flutter resources:
+
+Write your first Flutter app
+Useful Flutter samples
+Flutter official documentation
+Future Enhancements
+
+Some features that can be added in future versions include:
+
+User authentication
+Backend integration
+Database connectivity
+Push notifications
+Student profile management
+Real-time updates
+Admin dashboard support
+Contributing
+
+Contributions, suggestions, and improvements are welcome. Feel free to fork the repository and submit a pull request.
